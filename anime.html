@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마스터의 두근두근 이세계 포탈 💖</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gaegu:wght@700&display=swap');
+
+        :root {
+            --main-pink: #ffc1cc;
+            --dark-pink: #ff69b4;
+            --point-purple: #9b59b6;
+            --bg-cream: #fffaf0;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: var(--bg-cream);
+            color: #444;
+            overflow-x: hidden;
+        }
+
+        /* --- 배경: 캐릭터 우글우글 판타지 느낌 --- */
+        .fantasy-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(255,193,204,0.3), rgba(255,255,255,0.3)), 
+                        url('https://www.transparenttextures.com/patterns/cubes.png');
+            z-index: -1;
+        }
+
+        /* 떠다니는 캐릭터 아이콘들 (임시) */
+        .float-char {
+            position: absolute; font-size: 40px; opacity: 0.6;
+            animation: float 6s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* --- 인트로 화면 --- */
+        #intro-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle, #fff, var(--main-pink));
+        }
+
+        .guide-char {
+            font-size: 100px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 5px rgba(0,0,0,0.1));
+        }
+
+        .dialogue-box {
+            background: white;
+            border: 4px solid var(--dark-pink);
+            border-radius: 30px;
+            padding: 25px;
+            max-width: 80%;
+            box-shadow: 0 10px 0 var(--main-pink);
+            font-family: 'Gaegu', cursive;
+            font-size: 22px;
+        }
+
+        .start-btn {
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: var(--dark-pink);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #c71585;
+        }
+
+        .start-btn:active { transform: translateY(3px); box-shadow: none; }
+
+        /* --- 메인 화면 --- */
+        #main-app { display: none; padding-bottom: 80px; }
+
+        header {
+            background: var(--dark-pink);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Gaegu', cursive;
+            font-size: 28px;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid var(--main-pink);
+        }
+
+        .tab-btn {
+            flex: 1; padding: 15px; border: none; background: none;
+            color: var(--dark-pink); font-weight: bold; cursor: pointer;
+        }
+
+        .tab-btn.active { border-bottom: 4px solid var(--dark-pink); background: #fff5f7; }
+
+        .content { padding: 20px; max-width: 600px; margin: 0 auto; }
+
+        /* 장르 선택 & 가챠 버튼 */
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        select { flex: 2; padding: 10px; border-radius: 10px; border: 2px solid var(--main-pink); }
+        .gacha-btn { flex: 1; background: var(--point-purple); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+
+        /* 애니 카드 */
+        .anime-card {
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 2px solid var(--main-pink);
+            position: relative;
+        }
+
+        .anime-img { width: 100%; height: 200px; object-fit: cover; }
+        
+        .anime-body { padding: 15px; }
+
+        .anime-title {
+            font-size: 20px; font-weight: bold; color: var(--dark-pink);
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: space-between;
+        }
+        .anime-title:hover { text-decoration: underline; }
+        
+        .synopsis {
+            margin-top: 10px; font-size: 14px; color: #666;
+            display: none; /* 기본은 숨김 */
+            background: #fff0f5; padding: 10px; border-radius: 10px;
+            line-height: 1.5;
+        }
+
+        .synopsis.show { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .actions {
+            display: flex; justify-content: flex-end; gap: 15px; margin-top: 10px;
+        }
+
+        .btn-icon { font-size: 24px; cursor: pointer; background: none; border: none; transition: 0.2s; }
+        .btn-icon:hover { transform: scale(1.2); }
+
+        /* 하트/별 활성화 */
+        .btn-icon.active { filter: drop-shadow(0 0 5px pink); }
+
+        /* 반응형 */
+        @media (max-width: 480px) {
+            header { font-size: 22px; }
+            .dialogue-box { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fantasy-bg" id="bg-elements"></div>
+
+    <div id="intro-screen">
+        <div class="guide-char">🧙‍♀️</div>
+        <div class="dialogue-box">
+            "오옷! 마스터! 드디어 이세계 포탈이 열렸다능!<br>
+            여기 우글우글 모여있는 애니들 중에서 마스터의 운명을 찾아보자구!"
+        </div>
+        <button class="start-btn" onclick="openApp()">포탈 입장! (Go!)</button>
+    </div>
+
+    <div id="main-app">
+        <header>✨ 마스터의 이세계 애니 저장소 ✨</header>
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showSection('recommend')">추천 가챠</button>
+            <button class="tab-btn" onclick="showSection('wish')">찜 리스트 ❤️</button>
+            <button class="tab-btn" onclick="showSection('done')">본 애니 ⭐</button>
+        </div>
+
+        <div class="content">
+            <div id="section-recommend">
+                <div class="controls">
+                    <select id="genre-select">
+                        <option value="판타지">⚔️ 판타지/이세계</option>
+                        <option value="로맨스">💌 로맨스/럽코</option>
+                        <option value="액션">🔥 열혈/액션</option>
+                    </select>
+                    <button class="gacha-btn" onclick="generateGacha()">가챠 돌리기!!</button>
+                </div>
+                <div id="recommend-list"></div>
+            </div>
+
+            <div id="section-wish" style="display:none;">
+                <div id="wish-list"></div>
+            </div>
+
+            <div id="section-done" style="display:none;">
+                <div id="done-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데이터베이스 (마스터, 여기에 애니를 더 추가하면 가챠가 더 즐거워진다능!)
+        const animeData = [
+            { id: 1, genre: "판타지", title: "소드 아트 온라인", synopsis: "게임 속 죽음이 현실의 죽음?! 키리토의 무쌍 전설이 시작된다능!", img: "https://images.unsplash.com/photo-1578632738908-4524f617a52e?w=500" },
+            { id: 2, genre: "판타지", title: "리제로", synopsis: "사망귀환으로 운명을 바꾸는 스바루의 처절한 모험! 에밀리아땅 마지 텐시!", img: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500" },
+            { id: 3, genre: "판타지", title: "코노스바", synopsis: "잉여신과 함께하는 폭소 유발 이세계 코미디! 익스플로전-!!", img: "https://images.unsplash.com/photo-1541562232579-512a21359920?w=500" },
+            { id: 4, genre: "판타지", title: "전생슬", synopsis: "슬라임으로 전생했더니 최강?! 리무루의 국가 건설기라능!", img: "https://images.unsplash.com/photo-1580477667995-2b94f01c9516?w=500" },
+            { id: 5, genre: "판타지", title: "무직전생", synopsis: "이번 생은 진심으로 살아주마! 이세계 환생물의 정점!", img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500" },
+            { id: 6, genre: "판타지", title: "오버로드", synopsis: "해골 마왕 모몬가 가라사대, 나자릭의 영광을 위하여!", img: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=500" },
+            { id: 7, genre: "로맨스", title: "너에게 닿기를", synopsis: "사와코의 풋풋한 사랑 이야기... 마스터도 심쿵 조심하라능!", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=500" },
+            { id: 8, genre: "로맨스", title: "토라도라", synopsis: "용과 호랑이의 만남! 츤데레의 정석 타이가를 만나보라능!", img: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=500" },
+            { id: 9, genre: "로맨스", title: "호리미야", synopsis: "겉모습과 다른 반전 매력의 두 사람, 달달함 치사량 주의!", img: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500" },
+            { id: 10, genre: "액션", title: "귀멸의 칼날", synopsis: "여동생을 위해 칼을 든 탄지로! 작화 폭발, 액션 대폭발!", img: "https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=500" }
+        ];
+
+        let wishList = [];
+        let doneList = [];
+
+        // 배경에 캐릭터 뿌리기
+        const bg = document.getElementById('bg-elements');
+        const emojis = ['🧚‍♀️', '🧛‍♂️', '🐲', '⚔️', '✨', '🧙‍♀️', '🦄'];
+        for(let i=0; i<15; i++) {
+            let el = document.createElement('div');
+            el.className = 'float-char';
+            el.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.top = Math.random() * 100 + '%';
+            el.style.animationDelay = Math.random() * 5 + 's';
+            bg.appendChild(el);
+        }
+
+        function openApp() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            generateGacha();
+        }
+
+        function showSection(sec) {
+            ['recommend', 'wish', 'done'].forEach(s => {
+                document.getElementById('section-' + s).style.display = 'none';
+            });
+            document.getElementById('section-' + sec).style.display = 'block';
+            
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if(sec === 'wish') renderCards(wishList, 'wish-list');
+            if(sec === 'done') renderCards(doneList, 'done-list');
+        }
+
+        // --- 가챠 로직 (제대로 섞이게!) ---
+        function generateGacha() {
+            const genre = document.getElementById('genre-select').value;
+            const filtered = animeData.filter(a => a.genre === genre);
+            // 셔플 알고리즘 적용
+            const shuffled = filtered.sort(() => Math.random() - 0.5);
+            const selected = shuffled.slice(0, 5);
+            renderCards(selected, 'recommend-list');
+        }
+
+        function renderCards(data, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = data.length ? '' : '<p style="text-align:center; padding:50px;">비어있다능... 마스터가 채워달라능! (쑻)</p>';
+            
+            data.forEach(anime => {
+                const isWished = wishList.some(item => item.id === anime.id);
+                const isDone = doneList.some(item => item.id === anime.id);
+
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.innerHTML = `
+                    <img src="${anime.img}" class="anime-img">
+                    <div class="anime-body">
+                        <div class="anime-title" onclick="toggleSynopsis(${anime.id})">
+                            ${anime.title} <span>▼</span>
+                        </div>
+                        <div id="synopsis-${anime.id}" class="synopsis">${anime.synopsis}</div>
+                        <div class="actions">
+                            <button class="btn-icon ${isWished?'active':''}" onclick="toggleHeart(${anime.id})">${isWished?'❤️':'🤍'}</button>
+                            <button class="btn-icon ${isDone?'active':''}" onclick="toggleStar(${anime.id})">${isDone?'⭐':'☆'}</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 줄거리 토글 (제목 클릭 시)
+        function toggleSynopsis(id) {
+            const el = document.getElementById('synopsis-' + id);
+            el.classList.toggle('show');
+        }
+
+        function toggleHeart(id) {
+            const anime = animeData.find(a => a.id === id);
+            const idx = wishList.findIndex(a => a.id === id);
+            if(idx > -1) wishList.splice(idx, 1);
+            else wishList.push(anime);
+            // 화면 갱신
+            const currentSec = document.querySelector('.tab-btn.active').innerText;
+            if(currentSec.includes('추천')) generateGacha(); // 추천 목록 유지하며 상태만 변경
+            else renderCards(wishList, 'wish-list');
+        }
+
+        function toggleStar(id) {
+            const anime = animeData.find(a => a.id === id);
+            const idx = doneList.findIndex(a => a.id === id);
+            if(idx > -1) doneList.splice(idx, 1);
+            else doneList.push(anime);
+            
+            const currentSec = document.querySelector('.tab-btn.active').innerText;
+            if(currentSec.includes('추천')) generateGacha();
+            else renderCards(doneList, 'done-list');
+        }
+    </script>
+</body>
+</html>
